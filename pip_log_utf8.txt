@@ -1,0 +1,115 @@
+Collecting mysql-connector-python
+  Using cached mysql_connector_python-9.7.0-py2.py3-none-any.whl.metadata (11 kB)
+Collecting pandas
+  Using cached pandas-3.0.3.tar.gz (4.7 MB)
+  Installing build dependencies: started
+  Installing build dependencies: still running...
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'error'
+.\.venv\Scripts\pip :   
+error: subprocess-exited-w
+ith-error
+At line:1 char:1
++ .\.venv\Scripts\pip 
+install 
+mysql-connector-python 
+pandas python-dote ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+  : N    otSpecified: (  
+error: subp    rocess-exit
+ed-with-error:St    ring) 
+[], RemoteException
+    + 
+FullyQualifiedErrorId : N 
+   ativeCommandError
+ 
+  
+  Preparing metadata 
+(pyproject.toml) did not 
+run successfully.
+  exit code: 1
+  
+  [10 lines of output]
+  + meson setup C:\Users\a
+rcha\AppData\Local\Temp\pi
+p-install-7d9l7854\pandas_
+f188b7c5ab0842dfb2a6100d51
+f42347 C:\Users\archa\AppD
+ata\Local\Temp\pip-install
+-7d9l7854\pandas_f188b7c5a
+b0842dfb2a6100d51f42347\.m
+esonpy-w157cad8 
+-Dbuildtype=release 
+-Db_ndebug=if-release 
+-Db_vscrt=md --vsenv --nat
+ive-file=C:\Users\archa\Ap
+pData\Local\Temp\pip-insta
+ll-7d9l7854\pandas_f188b7c
+5ab0842dfb2a6100d51f42347\
+.mesonpy-w157cad8\meson-py
+thon-native-file.ini
+  The Meson build system
+  Version: 1.11.1
+  Source dir: C:\Users\arc
+ha\AppData\Local\Temp\pip-
+install-7d9l7854\pandas_f1
+88b7c5ab0842dfb2a6100d51f4
+2347
+  Build dir: C:\Users\arch
+a\AppData\Local\Temp\pip-i
+nstall-7d9l7854\pandas_f18
+8b7c5ab0842dfb2a6100d51f42
+347\.mesonpy-w157cad8
+  Build type: native build
+  
+  ..\meson.build:2:0: 
+ERROR: Could not find 
+C:\Program Files 
+(x86)\Microsoft Visual Stu
+dio\Installer\vswhere.exe
+  
+  A full log can be found 
+at C:\Users\archa\AppData\
+Local\Temp\pip-install-7d9
+l7854\pandas_f188b7c5ab084
+2dfb2a6100d51f42347\.meson
+py-w157cad8\meson-logs\mes
+on-log.txt
+  [end of output]
+  
+  note: This error 
+originates from a 
+subprocess, and is likely 
+not a problem with pip.
+error: 
+metadata-generation-failed
+
+Encountered error while 
+generating package 
+metadata.
+
+See above for output.
+
+note: This is an issue 
+with the package 
+mentioned above, not pip.
+hint: See above for 
+details.
+
+[notice] A new release of 
+pip is available: 24.0 -> 
+26.1.2
+[notice] To update, run: C
+:\Users\archa\OneDrive\Pic
+tures\Desktop\attendance_a
+gent\.venv\Scripts\python.
+exe -m pip install 
+--upgrade pip

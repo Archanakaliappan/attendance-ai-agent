@@ -1,0 +1,7 @@
+mysql-connector-python
+pandas
+python-dotenv
+yagmail
+google-generativeai
+streamlit
+apscheduler
