@@ -202,8 +202,7 @@ def answer_question(question: str, student_id: int = None) -> str:
             
         return ask_gemini_phrasing(question, db_result)
         
-    # 3. Intent: Low attendance
-    elif "low attendance" in question_lower or ("low" in question_lower and "attendance" in question_lower) or ("below" in question_lower and "attendance" in question_lower) or ("under" in question_lower and "attendance" in question_lower):
+    elif any(w in question_lower for w in ["low", "below", "poor", "under"]) and any(w in question_lower for w in ["attendance", "percent", "percentage", "pct", "rate", "target", "threshold"]):
         min_pct_str = db.get_setting("MIN_ATTENDANCE_PERCENT", "75")
         rows = get_low_attendance_students()
         
