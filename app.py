@@ -133,7 +133,7 @@ def get_today_stats():
     late_count = 0
     
     # Load LATE_AFTER rule
-    late_after_str = os.getenv("LATE_AFTER", "09:45")
+    late_after_str = db.get_setting("LATE_AFTER", "09:45")
     try:
         late_hour, late_minute = map(int, late_after_str.split(':'))
         late_time = datetime.time(late_hour, late_minute)
@@ -303,7 +303,7 @@ with col_chart:
 
 with col_low:
     st.subheader("⚠️ Low Attendance Warnings")
-    min_pct_str = os.getenv("MIN_ATTENDANCE_PERCENT", "75")
+    min_pct_str = db.get_setting("MIN_ATTENDANCE_PERCENT", "75")
     st.markdown(f"Students with overall attendance below **{min_pct_str}%**:")
     
     try:

@@ -67,8 +67,8 @@ def is_empty(val):
 
 def send_email(to_email, subject, body):
     """Sends an email using yagmail, falling back to console print if credentials are missing."""
-    gmail_user = os.getenv("GMAIL_USER")
-    gmail_pw = os.getenv("GMAIL_APP_PASSWORD")
+    gmail_user = db.get_setting("GMAIL_USER")
+    gmail_pw = db.get_setting("GMAIL_APP_PASSWORD")
     
     # Format and log the email to standard output for visibility
     print(f"\n=================== SENDING EMAIL ===================")
@@ -99,10 +99,10 @@ def run_attendance_check():
     print(f"\n[CHECK] --- Starting Attendance Scan: {now.strftime('%Y-%m-%d %H:%M:%S')} ---")
     
     # Parse Timing Configuration
-    cutoff_time_str = os.getenv("CUTOFF_TIME", "09:30")
-    late_after_str = os.getenv("LATE_AFTER", "09:45")
-    second_reminder_delay = int(os.getenv("SECOND_REMINDER_DELAY_MINUTES", "30"))
-    admin_email = os.getenv("ADMIN_EMAIL", "admin@domain.com")
+    cutoff_time_str = db.get_setting("CUTOFF_TIME", "09:30")
+    late_after_str = db.get_setting("LATE_AFTER", "09:45")
+    second_reminder_delay = int(db.get_setting("SECOND_REMINDER_DELAY_MINUTES", "30"))
+    admin_email = db.get_setting("ADMIN_EMAIL", "admin@domain.com")
     
     try:
         cutoff_hour, cutoff_min = map(int, cutoff_time_str.split(":"))

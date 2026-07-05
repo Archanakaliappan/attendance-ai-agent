@@ -63,13 +63,27 @@ except ImportError:
 
 load_dotenv()
 
+def get_setting(key, default=None):
+    """
+    Retrieves configuration keys, prioritizing Streamlit's secrets (st.secrets)
+    when running on Streamlit Cloud, and falling back to environment variables (os.getenv).
+    """
+    try:
+        import streamlit as st
+        if hasattr(st, "secrets") and key in st.secrets:
+            return str(st.secrets[key])
+    except Exception:
+        pass
+    return os.getenv(key, default)
+
+
 def get_connection():
     return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        port=os.getenv("DB_PORT", "3306"),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "attendancejframebd"),
+        host=get_setting("DB_HOST", "localhost"),
+        port=get_setting("DB_PORT", "3306"),
+        user=get_setting("DB_USER", "root"),
+        password=get_setting("DB_PASSWORD", ""),
+        database=get_setting("DB_NAME", "attendancejframebd"),
     )
 
 

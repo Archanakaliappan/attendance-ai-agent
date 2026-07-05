@@ -16,7 +16,7 @@ import db
 load_dotenv()
 
 # Configure Gemini Client
-api_key = os.getenv("GEMINI_API_KEY")
+api_key = db.get_setting("GEMINI_API_KEY")
 if not api_key:
     raise ValueError("[ERROR] GEMINI_API_KEY not found in .env file or environment variables.")
 client = genai.Client(api_key=api_key)
@@ -28,7 +28,7 @@ def get_low_attendance_students():
     defined by MIN_ATTENDANCE_PERCENT in the .env file.
     """
     load_dotenv()
-    min_pct_str = os.getenv("MIN_ATTENDANCE_PERCENT", "75")
+    min_pct_str = db.get_setting("MIN_ATTENDANCE_PERCENT", "75")
     try:
         min_pct = float(min_pct_str)
     except ValueError:
@@ -133,10 +133,27 @@ def answer_question(question: str, student_id: int = None) -> str:
     Matches keywords in the user's question, runs corresponding SQL query,
     and calls Gemini to formulate a single natural-language sentence answer.
     """
+    import re
     question_lower = question.lower()
     
+    # Extract student_id from question text if not provided as an argument
+    if not student_id:
+        # Match common patterns like "student 101", "id 101", "of 101", "for 101", "user 101"
+        match = re.search(r'\b(?:id|student|user|for|of)\s*:?\s*(\d+)\b', question_lower)
+        if match:
+            student_id = int(match.group(1))
+        else:
+            # Fallback: scan for any digit sequence but ignore common thresholds (e.g. 75)
+            all_numbers = re.findall(r'\b\d+\b', question)
+            for num in all_numbers:
+                val = int(num)
+                # Ignore numbers likely representing percentages or common rule config values
+                if val != 75 and val < 1000:
+                    student_id = val
+                    break
+    
     # 1. Intent: Attendance percentage
-    if "attendance" in question_lower and "percentage" in question_lower:
+    if "attendance" in question_lower and any(w in question_lower for w in ["percent", "percentage", "pct", "rate"]):
         if not student_id:
             return ask_gemini_for_missing_student_id("attendance percentage")
             
@@ -162,7 +179,7 @@ def answer_question(question: str, student_id: int = None) -> str:
         return ask_gemini_phrasing(question, db_result)
         
     # 2. Intent: Today absent / absentees
-    elif ("absent" in question_lower and "today" in question_lower) or "absentees" in question_lower or "today absent" in question_lower:
+    elif ("absent" in question_lower and "today" in question_lower) or "absentees" in question_lower or "today absent" in question_lower or "who is absent" in question_lower or "absent list" in question_lower:
         today = datetime.date.today()
         conn = db.get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -186,8 +203,8 @@ def answer_question(question: str, student_id: int = None) -> str:
         return ask_gemini_phrasing(question, db_result)
         
     # 3. Intent: Low attendance
-    elif "low attendance" in question_lower or ("low" in question_lower and "attendance" in question_lower):
-        min_pct_str = os.getenv("MIN_ATTENDANCE_PERCENT", "75")
+    elif "low attendance" in question_lower or ("low" in question_lower and "attendance" in question_lower) or ("below" in question_lower and "attendance" in question_lower) or ("under" in question_lower and "attendance" in question_lower):
+        min_pct_str = db.get_setting("MIN_ATTENDANCE_PERCENT", "75")
         rows = get_low_attendance_students()
         
         if not rows:
@@ -199,7 +216,7 @@ def answer_question(question: str, student_id: int = None) -> str:
         return ask_gemini_phrasing(question, db_result)
         
     # 4. Intent: Leaves taken
-    elif "leaves" in question_lower:
+    elif any(w in question_lower for w in ["leave", "leaves", "time off", "vacation"]):
         if not student_id:
             return ask_gemini_for_missing_student_id("leaves taken")
             
@@ -214,7 +231,7 @@ def answer_question(question: str, student_id: int = None) -> str:
         return ask_gemini_phrasing(question, db_result)
         
     # 5. Intent: Late count
-    elif "late" in question_lower:
+    elif any(w in question_lower for w in ["late", "tardy", "delay", "behind time"]):
         if not student_id:
             return ask_gemini_for_missing_student_id("late count")
             
@@ -227,7 +244,6 @@ def answer_question(question: str, student_id: int = None) -> str:
         
         db_result = f"Student ID {student_id} has logged {count} late arrival explanations in the database."
         return ask_gemini_phrasing(question, db_result)
-
         
     # Default: General Gemini response
     else:
